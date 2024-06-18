@@ -40,8 +40,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
+#include <Eigen/src/Core/Matrix.h>
+
 #include <basalt/spline/rd_spline.h>
-#include <eigen3/Eigen/src/Core/Matrix.h>
 #include <basalt/calibration/calib_bias.hpp>
 #include <basalt/camera/generic_camera.hpp>
 

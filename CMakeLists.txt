@@ -104,6 +104,10 @@ else()
 endif()
 report_dependency_location(Eigen3 Eigen3::Eigen)
 
+# Set eigen headers as SYSTEM to ignore its warnings
+get_target_property(_eigen_includes eigen INTERFACE_INCLUDE_DIRECTORIES)
+target_include_directories(eigen SYSTEM INTERFACE ${_eigen_includes})
+
 option(BASALT_BUILTIN_SOPHUS "Use builtin Sophus from submodule" ON)
 if(NOT TARGET Sophus::Sophus)
   if(BASALT_BUILTIN_SOPHUS)
