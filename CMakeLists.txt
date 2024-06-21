@@ -4,6 +4,22 @@ include(CMakePackageConfigHelpers)
 
 project(basalt-headers VERSION 0.1.0 LANGUAGES CXX)
 
+function(ignore_external_warnings target)
+
+  # Silence compile warnings
+  get_target_property(_target_type ${target} TYPE)
+  if (NOT _target_type STREQUAL "INTERFACE_LIBRARY")
+    target_compile_options(${target} PRIVATE "-w")
+  endif()
+
+  # Silence include warnings
+  get_target_property(_includes ${target} INTERFACE_INCLUDE_DIRECTORIES)
+  if(_includes)
+    target_include_directories(${target} SYSTEM INTERFACE ${_includes})
+  endif()
+
+endfunction(ignore_external_warnings)
+
 include(GNUInstallDirs)
 include(CTest) # note: this adds a BUILD_TESTING which defaults to ON
 
@@ -103,10 +119,7 @@ else()
   message(STATUS "Eigen already available")
 endif()
 report_dependency_location(Eigen3 Eigen3::Eigen)
-
-# Set eigen headers as SYSTEM to ignore its warnings
-get_target_property(_eigen_includes eigen INTERFACE_INCLUDE_DIRECTORIES)
-target_include_directories(eigen SYSTEM INTERFACE ${_eigen_includes})
+ignore_external_warnings(eigen)
 
 option(BASALT_BUILTIN_SOPHUS "Use builtin Sophus from submodule" ON)
 if(NOT TARGET Sophus::Sophus)
@@ -123,6 +136,7 @@ else()
   message(STATUS "Sophus already available")
 endif()
 report_dependency_location(Sophus Sophus::Sophus)
+ignore_external_warnings(sophus)
 
 option(BASALT_BUILTIN_CEREAL "Use builtin Cereal from submodule" ON)
 if(NOT TARGET cereal::cereal)
@@ -137,6 +151,7 @@ else()
   message(STATUS "Cereal already available")
 endif()
 report_dependency_location(cereal cereal::cereal)
+ignore_external_warnings(cereal)
 
 add_library(basalt-headers INTERFACE)
 add_library (basalt::basalt-headers ALIAS basalt-headers)
